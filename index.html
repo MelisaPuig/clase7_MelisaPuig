@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agregar productos</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        jQuery("#boton-agregar-producto").click((event) => {
+          event.preventDefault();
+          const title = $("#title").val();
+          const price = $("#price").val();
+          const thumbnail = $("#thumbnail").val();
+          const newProduct = { title, price, thumbnail };
+          const url = "/api/productos";
+          const settings = {
+            url,
+            async: true,
+            crossDomain: true,
+            method: "POST",
+            contentType: "application/json",
+            dataType: "JSON",
+            data: JSON.stringify(newProduct),
+          };
+          $.ajax(settings).done((response) => {
+            if (typeof response.error !== "undefined") {
+              alert(`Ha ocurrido un error: ${response.error}`);
+              return;
+            }
+            if (typeof response.result === "undefined") {
+              alert(`No se ha obtenido una respuesta válida del servidor`);
+              return;
+            }
+            const { id, title } = response.result;
+            alert(`Se ha agregado el item "${title}"" con el id ${id}`);
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <section id="principal" class="border">
+      <div class="container__titulo">Ingrese Producto</div>
+      <div class="form">
+        <label for="title">Ingrese el Producto</label>
+        <input name="title" id="title" />
+        <label for="precio">Ingrese el precio</label>
+        <input
+          type="number"
+          name="precio"
+          id="precio"
+          placeholder="Ingrese el precio"
+          required
+        />
+        <label for="thumbnail">Thumbnail</label>
+        <input
+          name="thumbnail"
+          id="thumbnail"
+          placeholder="Ingrese el thumbnail"
+          required
+        />
+        <input
+          type="submit"
+          id="boton-agregar-producto"
+          value="Agregar producto"
+        />
+      </div>
+    </section>
+  </body>
+</html>
